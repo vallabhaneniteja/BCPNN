@@ -16,6 +16,7 @@ bcpnn_data.py:
 Does the data cleaning part of the fda database using csv readers and stores them in a dictionary.
 
 Method of Execution:
+Create empty files alpha.csv, beta.csv, gamma.csv which contain the parameters for the program.
 The required files from FDA are the drug and the react files(The most recent at the time of writing are DRUG19Q1.txt and REACT19Q1.txt files) and keep them in the same directory as the python codes and run the bcpnn.py(Required packages are csv, collections, math most of which come with python).
 
 Output:
