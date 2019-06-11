@@ -1,9 +1,7 @@
 import bcpnn_data as bd 
 import bcpnn_parameters as bp 
 import time
-import tensorflow as tf
 import csv
-from tensorflow.keras import layers
 from collections import defaultdict
 import sys
 
@@ -60,8 +58,8 @@ def write_out(a_parameters,b_parameters,g_parameters,alp_fname,bet_fname,g_fname
 				writer.writerow([drug,adr,g_parameters[drug][adr]])
 
 start=time.time()
-drug_reports=bd.drug_data("data/ascii/DRUG19Q1.txt")
-adr_reports=bd.adr_data("data/ascii/REAC19Q1.txt")
+drug_reports=bd.drug_data("DRUG19Q1.txt")
+adr_reports=bd.adr_data("REAC19Q1.txt")
 drug_set=set()
 adr_set=set()
 
@@ -86,12 +84,6 @@ for key in drug_reports.keys():
 			drug_counts[drug]+=1
 			N+=1
 			
-# N=len(drug_reports.keys())
-# for drug in drug_matrix.keys():
-# 	if(len(drug_matrix[drug].keys())<5):
-# 		print(drug)
-# 		print(drug_matrix[drug])
-# 		input()
 a_parameters,b_parameters,g_parameters=read_parameters("alpha.csv","beta.csv","gamma.csv")
 
 tuple_set=set()
@@ -103,8 +95,6 @@ for drug in g_parameters.keys():
 		tuple_set.add((drug,adr))
 
 new_signals=[]
-# for drug in drug_matrix.keys():
-# 	for adr in drug_matrix[drug].keys():
 c1=0
 c2=0
 c3=0
@@ -116,25 +106,11 @@ for t in list(tuple_set):
 		b=drug_counts[drug]-a
 		c=adr_counts[adr]-a
 		d=N-(a+b+c)
-		if(adr=='Anaemia' and drug=='ALFADIOL'):
-			print(a)
-			print(b)
-			print(c)
-			print(d)
 		g11=g_parameters[drug][adr]
 		alp=a_parameters[drug]['alp']
 		alp1=a_parameters[drug]['alp1']
 		bet=b_parameters[adr]['bet']
 		bet1=b_parameters[adr]['bet1']
-		# print(a)
-		# print(b)
-		# print(c)
-		# print(d)
-		# print(alp)
-		# print(alp1)
-		# print(bet)
-		# print(bet1)
-		# print(g11)
 		signal_generated=bp.signal_output(a,b,c,d,g11,alp,bet,alp1,bet1)
 		if(signal_generated=='Weak Signal'):
 			c1+=1
@@ -142,8 +118,9 @@ for t in list(tuple_set):
 			c2+=1
 		elif(signal_generated=='Strong Signal'):
 			c3+=1
-print(c1,c2,c3)
-print("new signals="+str(len(new_signals)))	
+		new_signals.append((drug,adr,signal_generated))
+# print(c1,c2,c3)
+# print("new signals="+str(len(new_signals)))	
 for key in adr_counts.keys():
 	b_parameters[key]['bet']+=N
 	b_parameters[key]['bet1']+=adr_counts[key]
@@ -157,3 +134,14 @@ for drug in drug_matrix.keys():
 write_out(a_parameters,b_parameters,g_parameters,"alpha.csv","beta.csv","gamma.csv")
 print(count)
 print(time.time()-start)
+print("Required Drug:")
+required_drug=input()
+print("Required ADR:")
+required_adr=input()
+flag=0
+for t in new_signals:
+	if(t[0]==required_drug and t[1]==required_adr):
+		print(t[2])
+		flag=1
+if(flag==0):
+	print("No Correlation Exists")
