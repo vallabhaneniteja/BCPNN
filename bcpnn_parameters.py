@@ -60,6 +60,8 @@ def signal_output(a,b,c,d,g11,alp,bet,alp1,bet1):
         return("Medium Signal")
     elif ans > 3.0:
         return("Strong Signal")
+    else:
+        return("Negative Signal")
     # else:
     #     print("Not valid")
     #     raise ValueError
